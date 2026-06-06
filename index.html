@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>圆角矩形图标生成器 Pro</title>
+    <title>圆角矩形图标生成器</title>
     <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
     <style>
         :root {
@@ -254,42 +254,30 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 24px;
         }
 
         .preview-container {
-            width: 100%; /* 自适应父容器 */
-            max-width: 400px; /* 视觉上不要太大，但内部Canvas是512 */
+            width: 100%;
+            max-width: 380px;
             aspect-ratio: 1/1;
             position: relative;
-            margin-bottom: 20px;
-            /* 棋盘格背景 */
-            background-image: 
-                linear-gradient(45deg, #e5e7eb 25%, transparent 25%), 
-                linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #e5e7eb 75%), 
-                linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            background-color: #fff;
-            border-radius: var(--radius-lg);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border-color);
-            padding: 20px;
         }
 
         .icon-preview {
             width: 100%;
             height: 100%;
             position: relative;
-            filter: drop-shadow(0 20px 25px rgba(0,0,0,0.15)); /* 给生成的图标加一点悬浮感 */
-            transition: transform 0.3s ease;
+            filter: drop-shadow(0 16px 24px rgba(0,0,0,0.12));
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .icon-preview:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
         }
 
         .preview-image-result {
@@ -297,21 +285,28 @@
             height: 100%;
             object-fit: contain;
             display: block;
+            border-radius: calc(var(--radius-lg) - 8px);
         }
 
         .source-image { display: none !important; }
 
         .layer-status {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
+            width: 100%;
+            justify-content: center;
         }
 
         .layer-status span {
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-weight: 500;
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
 
         .layer1-status { background-color: #eff6ff; color: var(--layer1-color); }
@@ -320,23 +315,23 @@
         /* 按钮美化 */
         .action-buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             width: 100%;
         }
 
         button {
-            padding: 12px 20px;
+            padding: 11px 14px;
             border: none;
             border-radius: var(--radius-md);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 0.95rem;
+            gap: 6px;
+            font-size: 0.875rem;
         }
 
         .primary-btn {
@@ -344,7 +339,7 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3);
         }
-        .primary-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .primary-btn:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 12px -1px rgba(99, 102, 241, 0.4); }
         .primary-btn:active { transform: translateY(0); }
 
         .ico-btn {
@@ -352,16 +347,14 @@
             color: white;
             box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
         }
-        .ico-btn:hover { background: #059669; transform: translateY(-1px); }
+        .ico-btn:hover { background: #059669; transform: translateY(-1px); box-shadow: 0 6px 12px -1px rgba(16, 185, 129, 0.4); }
 
         .secondary-btn {
             background: white;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
         }
-        .secondary-btn:hover { border-color: var(--text-secondary); color: var(--text-main); background: #f8fafc; }
-        
-        #resetPreviewBtn { grid-column: 1 / -1; margin-bottom: 5px; }
+        .secondary-btn:hover { border-color: var(--primary-color); color: var(--primary-color); background: #f8fafc; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1); }
 
         /* 捐赠区域 */
         .donation-section {
@@ -418,7 +411,7 @@
     <div class="container">
         <header>
             <h1>圆角矩形图标生成器</h1>
-            <p class="subtitle">专业的圆角矩形图标生成工具。支持多图层合成、实时亚克力效果预览，一键导出 512px 透明 PNG 及 ICO 文件。</p>
+            <p class="subtitle">支持多图层合成、实时效果预览，一键导出 512px 透明 PNG 及 ICO 文件。</p>
         </header>
         
         <div class="controls-wrapper">
@@ -447,7 +440,11 @@
                         </div>
                         <div class="control-group">
                             <div class="control-label"><span>缩放</span><span class="control-value layer1" id="scaleValue1">100%</span></div>
-                            <input type="range" class="layer1" id="scale1" min="10" max="200" value="100">
+                            <input type="range" class="layer1" id="scale1" min="10" max="300" value="100">
+                            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                                <button class="secondary-btn" id="fitShortBtn1" style="flex: 1; font-size: 0.8rem; padding: 8px;">缩放至短边</button>
+                                <button class="secondary-btn" id="fitLongBtn1" style="flex: 1; font-size: 0.8rem; padding: 8px;">缩放至长边</button>
+                            </div>
                         </div>
                         <div class="control-group">
                             <div class="control-label"><span>水平位移 (X)</span><span class="control-value layer1" id="positionXValue1">0</span></div>
@@ -490,7 +487,11 @@
                         </div>
                         <div class="control-group">
                             <div class="control-label"><span>缩放</span><span class="control-value layer2" id="scaleValue2">100%</span></div>
-                            <input type="range" class="layer2" id="scale2" min="10" max="200" value="100">
+                            <input type="range" class="layer2" id="scale2" min="10" max="300" value="100">
+                            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                                <button class="secondary-btn" id="fitShortBtn2" style="flex: 1; font-size: 0.8rem; padding: 8px;">缩放至短边</button>
+                                <button class="secondary-btn" id="fitLongBtn2" style="flex: 1; font-size: 0.8rem; padding: 8px;">缩放至长边</button>
+                            </div>
                         </div>
                         <div class="control-group">
                             <div class="control-label"><span>水平位移 (X)</span><span class="control-value layer2" id="positionXValue2">0</span></div>
@@ -520,35 +521,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="card">
-                <div class="section-header">
-                    <h2 class="section-title">全局样式</h2>
-                </div>
-                
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>图层堆叠顺序</span>
-                        <span class="control-value" id="layerOrderValue" style="color: var(--text-secondary);">默认</span>
-                    </div>
-                    <select id="layerOrder">
-                        <option value="layer1-bottom">图层 1 在底部，图层 2 在顶部</option>
-                        <option value="layer2-bottom">图层 2 在底部，图层 1 在顶部</option>
-                    </select>
-                </div>
-                
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>图标圆角半径</span>
-                        <span class="control-value" id="radiusValue">30px</span>
-                    </div>
-                    <input type="range" id="radius" min="0" max="100" value="30">
-                </div>
-                
-                <button class="secondary-btn w-100 mt-4" id="resetAllBtn">
-                    <span>重置所有参数</span>
-                </button>
-            </div>
         </div>
         
         <div class="preview-wrapper">
@@ -559,7 +531,6 @@
                 
                 <div class="preview-container">
                     <div class="icon-preview">
-                        <div class="layer-indicator">所见即所得</div>
                         <img id="finalPreview" class="preview-image-result" src="" alt="图标预览">
                         
                         <img id="previewImage1" class="source-image" src="" alt="第一层源">
@@ -568,16 +539,16 @@
                 </div>
                 
                 <div class="layer-status">
-                    <span class="layer1-status">图层 1: <span id="layer1Status">未选择</span></span>
-                    <span class="layer2-status">图层 2: <span id="layer2Status">未选择</span></span>
+                    <span class="layer1-status">图层 1: <span id="layer1Status" style="color: #9ca3af;">无内容</span></span>
+                    <span class="layer2-status">图层 2: <span id="layer2Status" style="color: #9ca3af;">无内容</span></span>
                 </div>
                 
                 <div class="action-buttons">
-                    <button class="secondary-btn" id="resetPreviewBtn">重置滑块</button>
+                    <button class="secondary-btn" id="resetPreviewBtn">重置全部</button>
                     <button class="primary-btn" id="downloadPngBtn">下载 PNG</button>
                     <button class="ico-btn" id="downloadIcoBtn">下载 ICO</button>
                 </div>
-                <p class="file-size-info">512x512px • 透明背景 • 高清输出</p>
+
             </div>
             
             <div class="card donation-section">
@@ -699,13 +670,13 @@
             const brightnessSlider2 = document.getElementById('brightness2');
             const saturationSlider2 = document.getElementById('saturation2');
             
-            const layerOrderSelect = document.getElementById('layerOrder');
-            const radiusSlider = document.getElementById('radius');
-            
             const resetLayer1Btn = document.getElementById('resetLayer1Btn');
             const resetLayer2Btn = document.getElementById('resetLayer2Btn');
-            const resetAllBtn = document.getElementById('resetAllBtn');
             const resetPreviewBtn = document.getElementById('resetPreviewBtn');
+            const fitShortBtn1 = document.getElementById('fitShortBtn1');
+            const fitLongBtn1 = document.getElementById('fitLongBtn1');
+            const fitShortBtn2 = document.getElementById('fitShortBtn2');
+            const fitLongBtn2 = document.getElementById('fitLongBtn2');
             const downloadPngBtn = document.getElementById('downloadPngBtn');
             const downloadIcoBtn = document.getElementById('downloadIcoBtn');
             
@@ -725,12 +696,8 @@
             const brightnessValue2 = document.getElementById('brightnessValue2');
             const saturationValue2 = document.getElementById('saturationValue2');
             
-            const layerOrderValue = document.getElementById('layerOrderValue');
-            const radiusValue = document.getElementById('radiusValue');
-            
             const layer1Status = document.getElementById('layer1Status');
             const layer2Status = document.getElementById('layer2Status');
-            const layerIndicator = document.querySelector('.layer-indicator');
             
             let currentImage1 = null;
             let originalWidth1 = 0;
@@ -789,7 +756,8 @@
                             currentImage1 = previewImage1;
                             originalWidth1 = previewImage1.naturalWidth;
                             originalHeight1 = previewImage1.naturalHeight;
-                            layer1Status.textContent = '已就绪';
+                            layer1Status.textContent = '有内容';
+                            layer1Status.style.color = '#3b82f6';
                             applyAdjustments();
                         };
                     } else {
@@ -798,7 +766,8 @@
                             currentImage2 = previewImage2;
                             originalWidth2 = previewImage2.naturalWidth;
                             originalHeight2 = previewImage2.naturalHeight;
-                            layer2Status.textContent = '已就绪';
+                            layer2Status.textContent = '有内容';
+                            layer2Status.style.color = '#f43f5e';
                             applyAdjustments();
                         };
                     }
@@ -822,33 +791,33 @@
                 contrastValue2.textContent = contrastSlider2.value + '%';
                 brightnessValue2.textContent = brightnessSlider2.value + '%';
                 saturationValue2.textContent = saturationSlider2.value + '%';
-                
-                layerOrderValue.textContent = layerOrderSelect.options[layerOrderSelect.selectedIndex].text.includes("1 在底部") ? "1底 2顶" : "2底 1顶";
-                radiusValue.textContent = radiusSlider.value + 'px';
             }
             
             function resetLayer1Adjustments() {
                 opacitySlider1.value = 100; scaleSlider1.value = 100; positionXSlider1.value = 0; positionYSlider1.value = 0;
                 contrastSlider1.value = 100; brightnessSlider1.value = 100; saturationSlider1.value = 100;
+                currentImage1 = null;
+                originalWidth1 = 0;
+                originalHeight1 = 0;
+                previewImage1.src = '';
+                layer1Status.textContent = '无内容';
+                layer1Status.style.color = '#9ca3af';
                 updateSliderValues(); applyAdjustments();
             }
             
             function resetLayer2Adjustments() {
                 opacitySlider2.value = 100; scaleSlider2.value = 100; positionXSlider2.value = 0; positionYSlider2.value = 0;
                 contrastSlider2.value = 100; brightnessSlider2.value = 100; saturationSlider2.value = 100;
-                updateSliderValues(); applyAdjustments();
-            }
-            
-            function resetAllAdjustments() {
-                resetLayer1Adjustments(); resetLayer2Adjustments();
-                layerOrderSelect.value = 'layer1-bottom'; radiusSlider.value = 30;
+                currentImage2 = null;
+                originalWidth2 = 0;
+                originalHeight2 = 0;
+                previewImage2.src = '';
+                layer2Status.textContent = '无内容';
+                layer2Status.style.color = '#9ca3af';
                 updateSliderValues(); applyAdjustments();
             }
             
             function applyAdjustments() {
-                const layerOrder = layerOrderSelect.value;
-                layerIndicator.textContent = layerOrder === 'layer1-bottom' ? '图层1 在底部' : '图层2 在底部';
-                
                 const canvas = generateIconCanvas();
                 finalPreview.src = canvas.toDataURL('image/png');
                 currentImageDataUrl = null;
@@ -856,12 +825,59 @@
             
             [opacitySlider1, scaleSlider1, positionXSlider1, positionYSlider1, contrastSlider1, brightnessSlider1, saturationSlider1].forEach(s => s.addEventListener('input', () => { updateSliderValues(); applyAdjustments(); }));
             [opacitySlider2, scaleSlider2, positionXSlider2, positionYSlider2, contrastSlider2, brightnessSlider2, saturationSlider2].forEach(s => s.addEventListener('input', () => { updateSliderValues(); applyAdjustments(); }));
-            [layerOrderSelect, radiusSlider].forEach(c => c.addEventListener('input', () => { updateSliderValues(); applyAdjustments(); }));
             
             resetLayer1Btn.addEventListener('click', resetLayer1Adjustments);
             resetLayer2Btn.addEventListener('click', resetLayer2Adjustments);
-            resetAllBtn.addEventListener('click', resetAllAdjustments);
-            resetPreviewBtn.addEventListener('click', resetAllAdjustments);
+            
+            fitShortBtn1.addEventListener('click', () => fitToShortSide(1));
+            fitLongBtn1.addEventListener('click', () => fitToLongSide(1));
+            fitShortBtn2.addEventListener('click', () => fitToShortSide(2));
+            fitLongBtn2.addEventListener('click', () => fitToLongSide(2));
+            
+            function fitToShortSide(layer) {
+                const scaleSlider = layer === 1 ? scaleSlider1 : scaleSlider2;
+                scaleSlider.value = 100;
+                updateSliderValues();
+                applyAdjustments();
+            }
+            
+            function fitToLongSide(layer) {
+                const containerWidth = 488;
+                const containerHeight = 468;
+                let originalWidth, originalHeight, scaleSlider;
+                
+                if (layer === 1) {
+                    originalWidth = originalWidth1;
+                    originalHeight = originalHeight1;
+                    scaleSlider = scaleSlider1;
+                } else {
+                    originalWidth = originalWidth2;
+                    originalHeight = originalHeight2;
+                    scaleSlider = scaleSlider2;
+                }
+                
+                if (originalWidth === 0 || originalHeight === 0) {
+                    alert('请先上传图片');
+                    return;
+                }
+                
+                const scaleX = containerWidth / originalWidth;
+                const scaleY = containerHeight / originalHeight;
+                const minScale = Math.min(scaleX, scaleY);
+                const maxScale = Math.max(scaleX, scaleY);
+                const scale = (maxScale / minScale) * 100;
+                scaleSlider.value = Math.round(scale) + 1;
+                updateSliderValues();
+                applyAdjustments();
+            }
+            resetPreviewBtn.addEventListener('click', function() {
+                if (confirm('确定要重置全部参数并清除所有图片吗？')) {
+                    resetLayer1Adjustments();
+                    resetLayer2Adjustments();
+                    updateSliderValues();
+                    applyAdjustments();
+                }
+            });
             
             function generateIconCanvas() {
                 const canvas = document.createElement('canvas');
@@ -873,7 +889,7 @@
                 const rectY = (512 - 468) / 2;
                 const width = 488;
                 const height = 468;
-                const radius = parseInt(radiusSlider.value);
+                const radius = 30;
                 
                 function createRoundedRectPath(x, y, w, h, r) {
                     ctx.beginPath();
@@ -916,14 +932,8 @@
                 createRoundedRectPath(rectX, rectY, width, height, radius);
                 ctx.clip();
                 
-                let firstLayer, secondLayer;
-                if (layerOrderSelect.value === 'layer1-bottom') {
-                    firstLayer = { image: currentImage1, isLayer1: true };
-                    secondLayer = { image: currentImage2, isLayer1: false };
-                } else {
-                    firstLayer = { image: currentImage2, isLayer1: false };
-                    secondLayer = { image: currentImage1, isLayer1: true };
-                }
+                const firstLayer = { image: currentImage1, isLayer1: true };
+                const secondLayer = { image: currentImage2, isLayer1: false };
                 
                 if (firstLayer.image) drawLayerToCanvas(ctx, firstLayer.image, firstLayer.isLayer1, rectX, rectY);
                 if (secondLayer.image) drawLayerToCanvas(ctx, secondLayer.image, secondLayer.isLayer1, rectX, rectY);
@@ -964,16 +974,16 @@
                 ctx.restore();
 
                 // 5. 顶层亚克力大面积光泽感
-                const glossGradient = ctx.createLinearGradient(rectX, rectY, rectX + width, rectY + height * 0.5);
-                glossGradient.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-                glossGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.1)');
-                glossGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                //const glossGradient = ctx.createLinearGradient(rectX, rectY, rectX + width, rectY + height * 0.5);
+                //glossGradient.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+                //glossGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.1)');
+                //glossGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
                 
-                ctx.save();
-                createRoundedRectPath(rectX, rectY, width, height, radius);
-                ctx.fillStyle = glossGradient;
-                ctx.fill();
-                ctx.restore();
+                //ctx.save();
+                //createRoundedRectPath(rectX, rectY, width, height, radius);
+                //ctx.fillStyle = glossGradient;
+                //ctx.fill();
+                //ctx.restore();
                 
                 return canvas;
             }
